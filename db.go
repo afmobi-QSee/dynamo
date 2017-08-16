@@ -29,3 +29,23 @@ type Iter interface {
 	// You should check this after Next is finished.
 	Err() error
 }
+
+//ListTables wrapper for dynamodb listtables
+func (db *DB) ListTables() []*string{
+	svc := db.client
+	result, err := svc.ListTables(&dynamodb.ListTablesInput{})
+	if err != nil {
+		return nil
+	}
+
+	return result.TableNames
+}
+
+//DescribeTable of table, input the table name
+func (db *DB) DescribeTable(table string) (*dynamodb.DescribeTableOutput, error) {
+	svc := db.client
+	input := &dynamodb.DescribeTableInput{
+		TableName: aws.String(table),
+	}
+	return svc.DescribeTable(input)
+}
